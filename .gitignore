@@ -308,6 +308,7 @@ compile_commands.json
 # project
 dist
 build
+.idea
 
 app.db
 settings.json
