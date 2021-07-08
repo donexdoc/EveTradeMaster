@@ -61,5 +61,5 @@ TABLE_TYPES_HEADERS = [
 ]
 
 # Debug variables
-DEBUG_MODE = True
+DEBUG_MODE = False
 test_default_predict_line = "4310, 16240, 16242, 32880, 28668, 439"
