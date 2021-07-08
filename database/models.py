@@ -35,14 +35,14 @@ class GroupType(BaseModel):
 class GameType(BaseModel):
     id = PrimaryKeyField()
     name = CharField(default="")
-    group = ForeignKeyField(GroupType, to_field="id")
+    group = ForeignKeyField(GroupType, to_field="id", on_delete='CASCADE')
     in_default_predict = BooleanField(default=False)
 
 
 class PricePrediction(BaseModel):
     id = PrimaryKeyField()
     name = CharField(default="New prediction")
-    game_type = ForeignKeyField(GameType, to_field="id")
+    game_type = ForeignKeyField(GameType, to_field="id", on_delete='CASCADE')
     prediction_date = DateTimeField(default=datetime.datetime.now())
     min_sell_price = FloatField()
     max_buy_price = FloatField()

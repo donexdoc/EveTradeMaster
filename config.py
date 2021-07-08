@@ -10,7 +10,7 @@ PRICE_DUMPING_BUY = 1.0
 
 # информация по приложению
 DATABASE_MODELS_VERSION = '1.0'
-APP_VERSION = '0.2.0'
+APP_VERSION = '0.2.1'
 
 # стоимость эксперимента
 EXPERIMENT_AMOUNT = 100000000
@@ -61,5 +61,5 @@ TABLE_TYPES_HEADERS = [
 ]
 
 # Debug variables
-DEBUG_MODE = False
+DEBUG_MODE = True
 test_default_predict_line = "4310, 16240, 16242, 32880, 28668, 439"

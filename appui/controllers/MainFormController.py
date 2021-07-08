@@ -140,23 +140,6 @@ class MainWindow(QMainWindow):
             edited_game_type.save()
             self.types_table_load()
 
-        if item.column() == 0:
-            delete_confirm_mb = QMessageBox()
-
-            delete_confirm_mb.question(
-                self,
-                self.localization.get_string('dialogRemoveTypeTitle'),
-                f"{self.localization.get_string('dialogRemoveTypeMessage')}"
-                f"{edited_game_type.name} - {edited_game_type.id}?",
-                delete_confirm_mb.Yes | delete_confirm_mb.No
-            )
-
-            if delete_confirm_mb.Yes:
-                edited_game_type.delete_instance()
-
-            self.load_types()
-            self.types_table_load()
-
     def types_table_load(self):
 
         self.ui.savedTypesTw.setRowCount(0)
