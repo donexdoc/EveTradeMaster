@@ -1,5 +1,5 @@
 from PySide2.QtWidgets import QMainWindow, QTableWidgetItem, QMessageBox
-from PySide2.QtCore import Qt
+from PySide2.QtCore import Qt, QCoreApplication
 
 from settings.AppSettings import AppSettings
 from localization.AppLocale import AppLocale
@@ -99,6 +99,13 @@ class MainWindow(QMainWindow):
             self.localization.get_string('typesTableInDefault'),
         ]
 
+        self.ui.tabWidget.setTabText(self.ui.tabWidget.indexOf(self.ui.newPredictionsTab),
+                                     self.localization.get_string('newPredictionsTab'))
+        self.ui.tabWidget.setTabText(self.ui.tabWidget.indexOf(self.ui.savedPredictionsTab),
+                                     self.localization.get_string('savedPredictionsTab'))
+        self.ui.tabWidget.setTabText(self.ui.tabWidget.indexOf(self.ui.typesInDBTab),
+                                     self.localization.get_string('typesInDBTab'))
+
     def edit_prediction(self, item):
         selected_prediction = self.saved_predictions[item.row()]
 
@@ -119,9 +126,6 @@ class MainWindow(QMainWindow):
         dialog_add.setWindowTitle(self.localization.get_string('savePredictFormTitle'))
         dialog_add.setWindowFlag(Qt.WindowContextHelpButtonHint, False)
         dialog_add.exec_()
-
-        # selected_prediction.experiment_saved = True
-        # selected_prediction.save()
 
         self.load_saved_predictions()
         self.saved_table_load()
@@ -360,5 +364,6 @@ class MainWindow(QMainWindow):
     def add_more_types(self):
         dialog_add = AddTypeWindow(self)
         dialog_add.setModal(True)
+        dialog_add.setWindowTitle(self.localization.get_string('addNewTypesForm'))
         dialog_add.setWindowFlag(Qt.WindowContextHelpButtonHint, False)
         dialog_add.exec_()

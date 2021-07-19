@@ -11,7 +11,6 @@ from ESIAPI import APIHelper
 
 from peewee import SqliteDatabase
 
-import peeweedbevolve
 import config
 
 api = APIHelper(debug=config.DEBUG_MODE)

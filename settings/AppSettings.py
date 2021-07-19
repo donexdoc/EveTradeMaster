@@ -24,6 +24,15 @@ class AppSettings:
 
         self.__load_settings()
 
+    def get_setting(self, setting_name):
+        return self.settings[setting_name]
+
+    def get_app_language(self):
+        return self.settings['LANGUAGE']
+
+    def set_language(self, lang_name):
+        self.settings['LANGUAGE'] = lang_name
+
     def __load_settings(self):
         if os.path.isfile(self.setting_file):
             try:
@@ -36,9 +45,6 @@ class AppSettings:
                 print("Setting file reading error")
         else:
             return self.__create_default_file()
-
-    def get_setting(self, setting_name):
-        return self.settings[setting_name]
 
     def __set_default_settings(self):
         self.settings = json.dumps(

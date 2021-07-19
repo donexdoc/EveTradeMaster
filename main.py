@@ -8,15 +8,12 @@ import sys
 import os
 
 import config
-from ESIAPI import APIHelper
-
-api = APIHelper(debug=config.DEBUG_MODE)
 
 
 def resource_path(relative_path):
     try:
         base_path = sys._MEIPASS
-    except Exception:
+    except BaseException as e:
         base_path = os.path.abspath("./assets")
 
     return os.path.join(base_path, relative_path)

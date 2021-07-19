@@ -1,6 +1,6 @@
 STRINGS = {
     'newPredictionsTab': "Новые прогнозы",
-    'savedPredictionsTab': "СОхраненные прогнозы",
+    'savedPredictionsTab': "Сохраненные прогнозы",
     'typesInDBTab': "Предметы в бд",
     'newPredictionBtn': "Предметы из строки",
     'defaultPredictionBtn': "Прогнозы из избранного",
@@ -23,8 +23,8 @@ STRINGS = {
     'savePredictFormTitle': "Сохранить прогноз",
     'editPredictFormTitle': "Изменить прогноз",
     'editPredictNameLabel': "Имя прогноза:",
-    'brokerBuyPriceLabel': "Налог брокера на (за изменение ордера на покупку):",
-    'brokerSellPriceLabel': "Налог брокера на (за изменение ордера на продажу):",
+    'brokerBuyPriceLabel': "Налог брокера (за изменение ордера на покупку):",
+    'brokerSellPriceLabel': "Налог брокера (за изменение ордера на продажу):",
     'expectedProfitLabel': "Ожидаемая прибыль:",
     'deletePredictBtn': "Удалить прогноз",
     'completePredictBtn': "Закрыть прогноз",
