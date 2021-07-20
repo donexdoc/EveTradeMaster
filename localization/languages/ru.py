@@ -36,6 +36,8 @@ STRINGS = {
     'dialogRemoveTypeMessage': "Вы хотите удалить предметы: ",
     'connectErrorTitle': "Ошибка подключения к ESI API",
     'connectErrorMessage': "Извините, технические проблемы на стороне ESI API. Возможно наступил DT.\nПопробуйте позже.",
+    'predictionSavingErrorTitle': "Ошибка сохранения прогноза",
+    'predictionSavingErrorMessage': "Пожалуйста, проверьте введенные данные",
 
     'empty': "",
     'test_message': "XXXXXXXXX",

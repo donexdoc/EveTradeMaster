@@ -1,23 +1,13 @@
 from localization.languages.en import STRINGS as EN_STRINGS
 from localization.languages.ru import STRINGS as RU_STRINGS
 
+from patterns.Singleton import Singleton
 import config
 
 
-class AppLocale:
-    __instance = None
-
-    @staticmethod
-    def get_instance(language_code='en'):
-        if AppLocale.__instance is None:
-            AppLocale(language_code=language_code)
-        return AppLocale.__instance
+class AppLocale(metaclass=Singleton):
 
     def __init__(self, language_code='en'):
-        if AppLocale.__instance is not None:
-            raise Exception("This class is a singleton!")
-        else:
-            AppLocale.__instance = self
 
         self.language_code = language_code
         self.default_language = config.APP_LANGUAGE

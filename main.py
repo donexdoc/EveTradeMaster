@@ -3,29 +3,22 @@ from PySide2.QtCore import QSize
 from PySide2.QtGui import QIcon
 
 from appui.controllers.MainFormController import MainWindow
+from resources.Resources import Resources
 
 import sys
-import os
 
 import config
 
 
-def resource_path(relative_path):
-    try:
-        base_path = sys._MEIPASS
-    except BaseException as e:
-        base_path = os.path.abspath("./assets")
-
-    return os.path.join(base_path, relative_path)
-
-
 def main():
+    resource_manager = Resources()
+
     app = QApplication([])
     app.setApplicationName(config.APP_NAME)
     application = MainWindow()
 
     app_icon = QIcon()
-    app_icon.addFile(resource_path("EveTradeMaster.svg"), QSize(), QIcon.Normal, QIcon.Off)
+    app_icon.addFile(resource_manager.resource_path("EveTradeMaster.svg"), QSize(), QIcon.Normal, QIcon.Off)
     application.setWindowIcon(app_icon)
 
     application.show()

@@ -1,6 +1,5 @@
 from PySide2.QtWidgets import QDialog
 
-from localization.AppLocale import AppLocale
 from appui.design.pyforms.EditPredictionForm import Ui_DialogEditPredict
 
 

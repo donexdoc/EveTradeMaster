@@ -1,7 +1,12 @@
-from PySide2.QtWidgets import QMainWindow, QTableWidgetItem, QMessageBox
-from PySide2.QtCore import Qt, QCoreApplication
+from PySide2.QtWidgets import (
+    QMainWindow,
+    QTableWidgetItem,
+    QMessageBox
+)
+from PySide2.QtCore import Qt
 
 from settings.AppSettings import AppSettings
+from resources.Resources import Resources
 from localization.AppLocale import AppLocale
 from appui.design.pyforms.MainWindowForm import Ui_MainWindow
 from appui.controllers.AddTypeFormController import AddTypeWindow
@@ -32,21 +37,22 @@ class MainWindow(QMainWindow):
         if config.DEBUG_MODE:
             self.ui.inputIdsLe.setText(config.test_default_predict_line)
 
-        # API + DB + localization + settings
+        # API + DB + localization + settings + resources
         self.api_helper = APIHelper(debug=config.DEBUG_MODE)
         self.db_helper = DatabaseHelper()
         self.db_helper.create_tables()
         self.app_settings = AppSettings()
-        self.localization = AppLocale.get_instance(language_code=self.app_settings.get_setting('LANGUAGE'))
+        self.localization = AppLocale(language_code=self.app_settings.get_app_language())
+        self.resource_manager = Resources()
 
-        # локальные переменные
+        # локальные поля
         self.predictions = []
         self.game_types = []
         self.saved_predictions = []
         self.tables_titles = config.TABLE_PREDICT_HEADERS
         self.types_tables_titles = config.TABLE_TYPES_HEADERS
 
-        # инициализируем функции интерактивных элементов
+        # присваиваем методы интерактивным элементам
         self.ui.newPredictionBtn.clicked.connect(self.create_new_prediction)
         self.ui.unsavedPredictionsTw.doubleClicked.connect(self.save_prediction)
         self.ui.savedPredictionsTw.doubleClicked.connect(self.edit_prediction)
@@ -56,6 +62,7 @@ class MainWindow(QMainWindow):
 
         # переводим форму
         self.load_localization()
+
         # загружаем данные из БД
         self.load_types()
         self.load_saved_predictions()
@@ -199,9 +206,9 @@ class MainWindow(QMainWindow):
             for column_index, column in enumerate(cols):
                 column.setTextAlignment(Qt.AlignHCenter)
                 column.setFlags(column.flags() ^ Qt.ItemIsEditable)
-                if predict.marge_percent >= self.app_settings.get_setting('GOOD_MARGE_PERCENTAGE'):
+                if predict.marge_percent >= self.app_settings.get_good_marge():
                     column.setBackgroundColor("#6BCA5C")
-                if predict.marge_percent <= self.app_settings.get_setting('BAD_MARGE_PERCENTAGE'):
+                if predict.marge_percent <= self.app_settings.get_bad_marge():
                     column.setBackgroundColor("#C17D0F")
 
                 if predict.experiment_ended:
@@ -238,9 +245,9 @@ class MainWindow(QMainWindow):
             for column_index, column in enumerate(cols):
                 column.setTextAlignment(Qt.AlignHCenter)
                 column.setFlags(column.flags() ^ Qt.ItemIsEditable)
-                if predict.marge_percent >= self.app_settings.get_setting('GOOD_MARGE_PERCENTAGE'):
+                if predict.marge_percent >= self.app_settings.get_good_marge():
                     column.setBackgroundColor("#6BCA5C")
-                if predict.marge_percent <= self.app_settings.get_setting('BAD_MARGE_PERCENTAGE'):
+                if predict.marge_percent <= self.app_settings.get_good_marge():
                     column.setBackgroundColor("#C17D0F")
                 self.ui.unsavedPredictionsTw.setItem(predict_index, column_index, column)
 
@@ -272,7 +279,7 @@ class MainWindow(QMainWindow):
     def show_connect_error(self):
         esi_connect_error_mb = QMessageBox()
 
-        esi_connect_error_mb.question(
+        esi_connect_error_mb.critical(
             self,
             self.localization.get_string('connectErrorTitle'),
             self.localization.get_string('connectErrorMessage'),
@@ -297,8 +304,8 @@ class MainWindow(QMainWindow):
     def add_prediction(self, game_type):
         prices = self.api_helper.item_pricing_info(
             game_type.id,
-            [self.app_settings.get_setting('DEFAULT_REGION_ID')],
-            [self.app_settings.get_setting('DEFAULT_SYSTEM_ID')]
+            [self.app_settings.get_default_region()],
+            [self.app_settings.get_default_system()]
         )
 
         # расчет маржи по штуке и процента маржи
@@ -310,19 +317,20 @@ class MainWindow(QMainWindow):
             marge_percentage = 0
 
         # рекомендуемая цена, выставляемая в маркете
-        recommended_sell = prices['min_sell'] - self.app_settings.get_setting('PRICE_DUMPING_SELL')
-        recommended_buy = prices['max_buy'] + self.app_settings.get_setting('PRICE_DUMPING_BUY')
+        recommended_sell = prices['min_sell'] - self.app_settings.get_dumping_sell()
+        recommended_buy = prices['max_buy'] + self.app_settings.get_dumping_buy()
 
         # расчет цены рекомендуемой продажи
         recommended_sell_percent = prices['min_sell'] / 100.0
-        recommended_sell_tax = recommended_sell_percent * self.app_settings.get_setting('DEFAULT_TAX') + \
-                               recommended_sell_percent * self.app_settings.get_setting('BROKER_TAX')
+        recommended_sell_tax = recommended_sell_percent * self.app_settings.get_default_tax() + \
+                               recommended_sell_percent * self.app_settings.get_broker_tax()
+
         # итоговая цена рекомендуемой цены продажи
         recommended_sell_amount = recommended_sell + recommended_sell_tax
 
         # расчет цены рекомендуемой покупки
         recommended_buy_percent = recommended_buy / 100.0
-        recommended_buy_tax = recommended_buy_percent * self.app_settings.get_setting('BROKER_TAX')
+        recommended_buy_tax = recommended_buy_percent * self.app_settings.get_broker_tax()
 
         # итоговая цена рекомендуемой цены покупки
         recommended_buy_amount = recommended_buy + recommended_buy_tax
@@ -332,7 +340,7 @@ class MainWindow(QMainWindow):
 
         # стоимость эксперимента
         # кол-во позиций по цене, подходящей для покупки исходя из цены покупки
-        experiment_volume = int(self.app_settings.get_setting('EXPERIMENT_AMOUNT') / recommended_buy_amount)
+        experiment_volume = int(self.app_settings.get_experiment_amount() / recommended_buy_amount)
         # цена эксперимента
         expected_experiment_cost = experiment_volume * recommended_buy_amount
         # ожидаемый финальный профит за эксперимент

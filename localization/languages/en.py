@@ -36,6 +36,8 @@ STRINGS = {
     'dialogRemoveTypeMessage': "Do you want to remove item: ",
     'connectErrorTitle': "ESI API Error",
     'connectErrorMessage': "Sorry, technical error on ESI API Side, may be now is down time.\nTry again later.",
+    'predictionSavingErrorTitle': "Prediction saving error",
+    'predictionSavingErrorMessage': "Please check the entered information ",
 
     'empty': "",
     'test_message': "XXXXXXXXX",

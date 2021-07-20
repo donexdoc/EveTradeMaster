@@ -25,12 +25,6 @@ DEFAULT_SYSTEM_ID = 30000142
 # The Forge ID
 DEFAULT_REGION_ID = 10000002
 
-DEFAULT_TYPES = [
-    16242,
-    28668,
-    17476,
-]
-
 DB_NAME = "app.db"
 SETTING_NAME = "settings.json"
 

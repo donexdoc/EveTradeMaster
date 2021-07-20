@@ -1,6 +1,10 @@
-from PySide2.QtWidgets import QDialog
+from PySide2.QtWidgets import (
+    QDialog,
+    QMessageBox
+)
 
-from localization.AppLocale import AppLocale
+import config
+
 from appui.design.pyforms.SavePredictionForm import Ui_DialogSavePredict
 
 
@@ -38,19 +42,19 @@ class SavePredictWindow(QDialog):
             volume = float(self.ui.experimentVolumeLe.text())
 
             # рекомендуемая цена, выставляемая в маркете
-            recommended_sell = sell - self.parent.app_settings.get_setting('PRICE_DUMPING_SELL')
-            recommended_buy = buy + self.parent.app_settings.get_setting('PRICE_DUMPING_BUY')
+            recommended_sell = sell - self.parent.app_settings.get_dumping_sell()
+            recommended_buy = buy + self.parent.app_settings.get_dumping_buy()
 
             # расчет цены рекомендуемой продажи
             recommended_sell_percent = sell / 100.0
-            recommended_sell_tax = recommended_sell_percent * self.parent.app_settings.get_setting('DEFAULT_TAX') + \
-                                   recommended_sell_percent * self.parent.app_settings.get_setting('BROKER_TAX')
+            recommended_sell_tax = recommended_sell_percent * self.parent.app_settings.get_default_tax() + \
+                                   recommended_sell_percent * self.parent.app_settings.get_broker_tax()
             # итоговая цена рекомендуемой цены продажи
             recommended_sell_amount = recommended_sell + recommended_sell_tax
 
             # расчет цены рекомендуемой покупки
             recommended_buy_percent = recommended_buy / 100.0
-            recommended_buy_tax = recommended_buy_percent * self.parent.app_settings.get_setting('BROKER_TAX')
+            recommended_buy_tax = recommended_buy_percent * self.parent.app_settings.get_broker_tax()
 
             # итоговая цена рекомендуемой цены покупки
             recommended_buy_amount = recommended_buy + recommended_buy_tax
@@ -61,7 +65,8 @@ class SavePredictWindow(QDialog):
             self.ui.experimentCostLe.setText(str(volume * buy))
             self.ui.experimentProfitLe.setText(str(volume * expected_profit_per_one))
         except Exception as e:
-            print('Experiment cost or profit calculating error')
+            if config.DEBUG_MODE:
+                print('Experiment cost or profit calculating error')
 
     def save_prediction(self):
         try:
@@ -75,7 +80,17 @@ class SavePredictWindow(QDialog):
             self.predict.save()
             self.close()
         except Exception as e:
-            print("Prediction saving error")
+            if config.DEBUG_MODE:
+                print("Prediction saving error")
+
+            prediction_saving_error_mb = QMessageBox()
+
+            prediction_saving_error_mb.critical(
+                self,
+                self.localization.get_string('predictionSavingErrorTitle'),
+                self.localization.get_string('predictionSavingErrorMessage'),
+                prediction_saving_error_mb.Ok
+            )
 
     def setup_predict(self):
         self.ui.predictNameLe.setText(self.predict.name)
