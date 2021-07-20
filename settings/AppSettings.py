@@ -10,7 +10,7 @@ class AppSettings(metaclass=Singleton):
     def __init__(self):
 
         self.setting_file = config.SETTING_NAME
-        self.settings = json.dumps({})
+        self.settings = []
 
         self.__load_settings()
 
@@ -145,8 +145,8 @@ class AppSettings(metaclass=Singleton):
     def __load_settings(self):
         if os.path.isfile(self.setting_file):
             try:
-                with open(self.setting_file, encoding='utf-8') as f:
-                    self.settings = json.loads(json.loads(f.read()))
+                with open(self.setting_file, 'r') as reading_file:
+                    self.settings = json.loads(reading_file.read())
 
             except Exception as e:
                 return self.__create_default_file()
@@ -178,7 +178,8 @@ class AppSettings(metaclass=Singleton):
 
     def __save_settings_file(self):
 
-        sf = open(self.setting_file, 'w+')
-        sf.write(json.dumps(self.settings))
-        sf.close()
+        save_file = open(self.setting_file, 'w+')
+        save_file.write(self.settings)
+        save_file.close()
+
         return self.__load_settings()
